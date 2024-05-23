@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task2</title>
+</head>
+<body>
+    <h2>Simple Input</h2>
+
+    <div class="row">
+        <h4>enter ID</h4><input type="text" id="inputID">
+        <h4>enter Name</h4><input type="text" id="inputName">
+        <h4>enter Age</h4><input type="number" id="inputAge"><br>
+        <button id="btnInsert">Insert Data</button>
+    </div>
+</body>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDF6YbXO8etf-epmZcq6vNT9QlouUYucs8",
+        authDomain: "task1-139aa.firebaseapp.com",
+        databaseURL: "https://task1-139aa-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "task1-139aa",
+        storageBucket: "task1-139aa.appspot.com",
+        messagingSenderId: "313821224069",
+        appId: "1:313821224069:web:57e75c3a359399c9c25dec",
+        measurementId: "G-M866NSY8YG"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
+
+    var inputID = document.querySelector("#inputID");
+    var inputName = document.querySelector("#inputName");
+    var inputAge = document.querySelector("#inputAge");
+
+    var btnInsert = document.querySelector("#btnInsert");
+
+    btnInsert.addEventListener("click", funInsertData);
+
+    function funInsertData() {
+        set(ref(db, "people/" + inputID.value), {
+            name: inputName.value,
+            ID: inputID.value,
+            age: inputAge.value
+        })
+        .then(() => {
+            alert("Data added successfully!");
+        })
+        .catch((error) => {
+            alert("Error: " + error);
+        });
+    }
+</script>
+</html>

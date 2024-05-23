@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0px;
+        }
+        .container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>HERE YOUR PROFILE !</h3>
+        <div id="userInfo">
+            <!-- User information will be displayed here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKMkCAROoNgIg9EYIjwUp3xJphq5fEIlA",
+            authDomain: "firev9jsdb-1d1cb.firebaseapp.com",
+            databaseURL: "https://firev9jsdb-1d1cb-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "firev9jsdb-1d1cb",
+            storageBucket: "firev9jsdb-1d1cb.appspot.com",
+            messagingSenderId: "61410433854",
+            appId: "1:61410433854:web:cd6d29e826e3401c4fea6f",
+            measurementId: "G-M2N4WLNCWD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Function to display user information
+        function displayUserInfo() {
+            const user = JSON.parse(sessionStorage.getItem('user')) || JSON.parse(localStorage.getItem('user'));
+            console.log('User from session or local storage:', user);
+            if (user) {
+                const dbRef = ref(db, `users/${user.username}`);
+                get(dbRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        document.getElementById('userInfo').innerHTML = `
+                            <p><strong>Name:</strong> ${userData.name}</p>
+                            <p><strong>Address:</strong> ${userData.address}</p>
+                            <p><strong>Phone Number:</strong> ${userData.phone}</p>
+                        `;
+                    } else {
+                        document.getElementById('userInfo').innerHTML = "<p>No user data found.</p>";
+                    }
+                }).catch((error) => {
+                    console.error("Error getting user data: ", error);
+                    document.getElementById('userInfo').innerHTML = "<p>Error retrieving user data.</p>";
+                });
+            } else {
+                document.getElementById('userInfo').innerHTML = "<p>User not logged in.</p>";
+            }
+        }
+
+        // Call the function to display user information
+        displayUserInfo();
+    </script>
+</body>
+</html>
